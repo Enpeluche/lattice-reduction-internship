@@ -1,0 +1,414 @@
+
+
+\section{Fonctionnement et exemple}
+
+Nous présentons à présent l’algorithme de Lenstra–Lenstra–Lovász (\( \mathrm{LLL} \)), dans sa forme classique. Originellement \( \mathrm{LLL} \) est apparu dans l'article de 1982 et servait à factoriser des polynômes à coefficients rationnels.
+
+\begin{smallalgo}{LLL}{algo:LLL_MCA}
+    \LinesNumbered
+    \DontPrintSemicolon
+    \KwIn{Une base \( B = (\bb_1, \ldots, \bb_n) \)}
+    \KwOut{Une base réduite \( G = (\bg_1, \ldots, \bg_n) \) de \( B \)}
+
+    \For{\( i = 1 \) \KwTo \( n \)}{
+        \( \bg_i \leftarrow \bb_i \)\;
+    }
+
+    \( (B^*, U) \leftarrow \) \textsc{Gram-Schmidt} \( (B) \)\;
+
+    \While{\( i \leq n \)}
+    {
+        \For{\( j = i-1, i-2, \ldots, 1 \)}{
+            \( \bg_i \leftarrow \bg_i - \nint{\mu_{i,j}} \, \bg_j \)\;
+            Mettre à jour \( B^*, U  \)\;
+        }
+
+        \If{$i > 1$ \textbf{et} $\|\bg_{i-1}^*\|^2 > 2 \|\bg_{i}^*\|^2$}{
+            Échanger \( \bg_{i-1} \) et \( \bg_i \)\;
+            Mettre à jour \( B^*, U  \)\;
+            \( i \leftarrow i - 1 \)\;
+        }
+        \Else{
+            \( i \leftarrow i + 1 \)\;
+        }
+    }
+
+    \KwRet{\( G = (\bg_1, \ldots, \bg_n) \)}
+\end{smallalgo}
+
+\vspace{1cm}
+L’algorithme débute par le calcul de la base orthogonalisée de Gram–Schmidt (\textbf{ligne 3}), qui sert de support aux opérations de réduction.
+Le principe général repose sur l’application répétée de deux types d’étapes : des \emph{réductions de taille} (\textbf{lignes 5 à 7}) visant à raccourcir les vecteurs sans sortir du réseau, et des \emph{permutations} de vecteurs (\textbf{ligne 8}) effectuées lorsque la condition de Lovász, qui contrôle la décroissance des normes, n’est pas satisfaite.
+
+L’ensemble de ces opérations est imbriqué dans une boucle \texttt{while} qui se répète tant qu’une condition de progression n’est pas remplie.
+Nous verrons que cette condition de Lovász garantit non seulement une amélioration à chaque étape, mais également la terminaison de l’algorithme en un nombre fini d’itérations.
+
+\begin{example}
+    Soit
+    \[
+        B =
+        \begin{pmatrix}
+            1  & 1 & 1 \\
+            -1 & 0 & 2 \\
+            3  & 5 & 6
+        \end{pmatrix}
+        \in GL_3(\Z).
+    \]
+    On a $\displaystyle |\LL (B)| = 9, \quad A = \max_{1 \leq i \leq 3} \| \bb_i \| = 70$
+
+    On va essayer d'estimer un plus court vecteur
+    L'algorithme \hyperref[algo:LLL_MCA]{\emph{LLL}} commence par calculer la décomposition de Gram-Schmidt de \( B \), pour plus de détails sur le calcul de cette décomposition, ce calcul est effectué dans l'annexe \hyperref[appendix:linear_algebra]{\emph{Rappels d'algèbres linéaire }}.
+
+    On obtient la décomposition
+
+    \[
+        \begin{aligned}
+            U & =
+            \begin{pmatrix}
+                1            & 0             & 0 \\
+                \frac{1}{3}  & 1             & 0 \\
+                \frac{14}{3} & \frac{13}{14} & 1
+            \end{pmatrix}, \quad
+            B^* =
+            \begin{pmatrix}
+                1            & 1             & 1              \\
+                -\frac{4}{3} & - \frac{1}{3} & \frac{5}{3}    \\
+                -\frac{3}{7} & \frac{9}{14}  & - \frac{3}{14}
+            \end{pmatrix}.
+        \end{aligned}
+    \]
+
+    Voici un tableau récapitulant les principales étapes de l'algorithme. Le tableau est volontairement détaillé et fourni, le lecteur pourra revenir sur cet exemple pour comprendre ce que sont $d_1$, $d_2$, $D$ ou la signification de $\Gram(G)$.
+
+    \setlength{\tabcolsep}{0pt}
+
+    \begin{center}
+        \begin{tabular}{|c|c|c|c|c|c|} \hline % Premiere ligne
+            \( G \)
+             &
+            \( U \)
+             &
+            \( G^* \)
+             &
+            \parbox[c][1cm][c]{1cm}
+            {
+                \centering
+            \shortstack{\( d_1, d_2 \) \\ \( D \)}
+            }
+             &
+            \(
+            \begin{pmatrix}
+                \|\bg_1^*\|^2 \\
+                \|\bg_2^*\|^2 \\
+                \|\bg_3^*\|^2
+            \end{pmatrix}
+            \)
+             &
+            \( \Gram(G) \)
+            \\
+            \hline \tikzmark{l1} % Deuxieme ligne
+            \parbox[c][2.2cm][c]{3cm}
+            {%
+                \[
+                    \begin{pmatrix}
+                        1\quad 1\quad 1  \\
+                        -1\quad 0\quad 2 \\
+                        3\quad 5\quad 6
+                    \end{pmatrix}
+                \]
+            }
+             &
+            \(
+            \begin{pmatrix}
+                1            & 0             & 0 \\
+                \frac{1}{3}  & 1             & 0 \\
+                \frac{14}{3} & \frac{13}{14} & 1
+            \end{pmatrix}
+            \)
+             &
+            \(
+            \begin{pmatrix}
+                1            & 1            & 1              \\
+                -\frac{4}{3} & -\frac{1}{3} & \frac{5}{3}    \\
+                -\frac{3}{7} & \frac{9}{14} & - \frac{3}{14}
+            \end{pmatrix}
+            \)
+             &
+            \parbox[c][0.9cm][c]{0.9cm}
+            {
+                \centering
+            \shortstack{\( 3, 14 \)    \\ \( 42 \)}
+            }
+             &
+            \(
+            \begin{pmatrix}
+                3            \\
+                \frac{14}{3} \\
+                \frac{9}{14}
+            \end{pmatrix}
+            \)
+             &
+            \(
+            \begin{pmatrix}
+                3  & 1 & 14 \\
+                1  & 1 & 9  \\
+                14 & 9 & 70
+            \end{pmatrix}
+            \)
+            \\
+            \hline \tikzmark{l2} % troisieme ligne
+            \parbox[c][2.2cm][c]{3cm}
+            {%
+                \[
+                    \begin{pmatrix}
+                        1\quad 1\quad 1  \\
+                        -1\quad 0\quad 2 \\
+                        0\quad 1\quad 0
+                    \end{pmatrix}
+                \]
+            }
+             &
+            \(
+            \begin{pmatrix}
+                1           & 0             & 0 \\
+                \frac{1}{3} & 1             & 0 \\
+                \frac{1}{3} & \frac{-1}{14} & 1
+            \end{pmatrix}
+            \)
+             &
+            \(
+            \begin{pmatrix}
+                1            & 1            & 1              \\
+                -\frac{4}{3} & -\frac{1}{3} & \frac{5}{3}    \\
+                -\frac{3}{7} & \frac{9}{14} & - \frac{3}{14}
+            \end{pmatrix}
+            \)
+             &
+            \parbox[c][0.9cm][c]{0.9cm}
+            {
+                \centering
+            \shortstack{\( 3, 14 \)    \\ \( 42 \)}
+            }
+             &
+            \(
+            \begin{pmatrix}
+                3            \\
+                \frac{14}{3} \\
+                \frac{9}{14}
+            \end{pmatrix}
+            \)
+             &
+            \(
+            \begin{pmatrix}
+                3 & 1 & 1 \\
+                1 & 5 & 0 \\
+                1 & 0 & 1
+            \end{pmatrix}
+            \)
+            \\ \hline \tikzmark{l3}
+
+            \parbox[c][1.6cm][c]{2.5cm}
+            {%
+                \centering
+                \[
+                    \begin{pmatrix}
+                        1  & 1 & 1 \\
+                        0  & 1 & 0 \\
+                        -1 & 0 & 2
+                    \end{pmatrix}
+                \]
+            }
+             &
+            \(
+            \begin{pmatrix}
+                1           & 0            & 0 \\
+                \frac{1}{3} & 1            & 0 \\
+                \frac{1}{3} & \frac{-1}{2} & 1
+            \end{pmatrix}
+            \)
+             &
+            \parbox[c][2.2cm][c]{3cm}
+            {%
+
+                \(
+                \begin{pmatrix}
+                    1            & 1           & 1            \\
+                    -\frac{1}{3} & \frac{2}{3} & -\frac{1}{3} \\
+                    -\frac{3}{2} & 0           & \frac{3}{2}
+                \end{pmatrix}
+                \)
+            }
+             &
+            \parbox[c][0.9cm][c]{0.9cm}
+            {
+                \centering
+            \shortstack{\( 3, 2 \)     \\ \( 6 \)}
+            }
+             &
+            \(
+            \begin{pmatrix}
+                3           \\
+                \frac{2}{3} \\
+                \frac{9}{2}
+            \end{pmatrix}
+            \)
+             &
+            \(
+            \begin{pmatrix}
+                1           & 0            & 0 \\
+                0           & 1            & 0 \\
+                \frac{1}{3} & \frac{-1}{2} & 1
+            \end{pmatrix}
+            \)
+            \\
+            \hline  \tikzmark{l4}
+            \parbox[c][2.2cm][c]{3cm}
+            {%
+                \[
+                    \begin{pmatrix}
+                        0  & 1 & 0 \\
+                        1  & 1 & 1 \\
+                        -1 & 0 & 2
+                    \end{pmatrix}
+                \]
+            }
+             &
+            \(
+            \begin{pmatrix}
+                1           & 0            & 0 \\
+                1           & 1            & 0 \\
+                \frac{1}{3} & \frac{-1}{2} & 1
+            \end{pmatrix}
+            \)
+             &
+            \(
+            \begin{pmatrix}
+                0            & 1 & 0           \\
+                1            & 0 & 1           \\
+                -\frac{3}{2} & 0 & \frac{3}{2}
+            \end{pmatrix}
+            \)
+             &
+            \parbox[c][0.9cm][c]{0.9cm}
+            {
+                \centering
+            \shortstack{\( 1, 2 \)     \\ \( 2 \)}
+            }
+             &
+            \(
+            \begin{pmatrix}
+                1 \\
+                2 \\
+                \frac{9}{2}
+            \end{pmatrix}
+            \)
+             &
+            \(
+            \begin{pmatrix}
+                1           & 0            & 0 \\
+                0           & 1            & 0 \\
+                \frac{1}{3} & \frac{-1}{2} & 1
+            \end{pmatrix}
+            \)
+            \\
+            \hline \tikzmark{l5}
+            \parbox[c][2.2cm][c]{3cm}
+            {%     
+                \[
+                    \begin{pmatrix}
+                        0  & 1 & 0 \\
+                        1  & 0 & 1 \\
+                        -1 & 0 & 2
+                    \end{pmatrix}
+                \]
+            }
+             &
+            \(
+            \begin{pmatrix}
+                1           & 0            & 0 \\
+                0           & 1            & 0 \\
+                \frac{1}{3} & \frac{-1}{2} & 1
+            \end{pmatrix}
+            \)
+             &
+            \(
+            \begin{pmatrix}
+                0            & 1 & 0           \\
+                1            & 0 & 1           \\
+                -\frac{3}{2} & 0 & \frac{3}{2}
+            \end{pmatrix}
+            \)
+             &
+            \parbox[c][0.9cm][c]{0.9cm}
+            {
+                \centering
+            \shortstack{\( 1, 2 \)     \\ \( 2 \)}
+            }
+             &
+            \(
+            \begin{pmatrix}
+                1 \\
+                2 \\
+                \frac{9}{2}
+            \end{pmatrix}
+            \)
+             &
+            \(
+            \begin{pmatrix}
+                1 & 0 & 0 \\
+                0 & 2 & 1 \\
+                0 & 1 & 5
+            \end{pmatrix}
+            \)
+            \\ \hline
+        \end{tabular}
+    \end{center}
+
+    \vspace{1cm}
+
+    On obtient la base  LLL réduite :
+
+    \[
+        \bg_{reduced}=
+        \begin{pmatrix}
+            0  & 1 & 0 \\
+            1  & 0 & 1 \\
+            -1 & 0 & 2
+        \end{pmatrix}
+        \in M_3(\Z)
+    \]
+
+
+
+\end{example}
+
+
+\begin{tikzpicture}[remember picture, overlay]
+    \draw[->, thick, bend right=80]
+    ([xshift=0em]pic cs:l1) to
+    node[midway, left]{\small \shortstack{proprification\\ $\bg_3$}}
+    ([xshift=0em, yshift=1em]pic cs:l2);
+
+    \draw[->, thick, bend right=80]
+    ([xshift=0em]pic cs:l2) to
+    node[midway, left]{\small \shortstack{Lovasz\\ $\bg_2 \leftrightarrow \bg_3$}}
+    ([xshift=0em, yshift=1em]pic cs:l3);
+
+    \draw[->, thick, bend right=80]
+    ([xshift=0em]pic cs:l3) to
+    node[midway, left]{\small \shortstack{Lovasz\\ $\bg_1 \leftrightarrow \bg_2$}}
+    ([xshift=0em, yshift=1em]pic cs:l4);
+
+    \draw[->, thick, bend right=80]
+    ([xshift=0em]pic cs:l4) to
+    node[midway, left]{\small \shortstack{proprification\\ $\bg_2$}}
+    ([xshift=0em, yshift=1em]pic cs:l5);
+\end{tikzpicture}
+
+\begin{remark}
+    \leavevmode\vspace{0.5\baselineskip}
+    \begin{itemize}
+        \item[$\bullet$] La valeur $d_3$ ne nous intéresse pas car il s'agit d'un invariant,
+        \item[$\bullet$] \(Gram(G)\) se rapproche petit a petit d'une matrice diagonale.
+    \end{itemize}
+\end{remark}

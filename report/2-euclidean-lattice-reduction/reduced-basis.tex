@@ -1,0 +1,132 @@
+\section{La base réduite}
+
+Dans les problèmes liés aux réseaux euclidiens, une base orthogonale représenterait une base idéale.
+
+\begin{problem}[\textbf{Problème}]
+La base \( B^* \) ( de $\R^n$ ) n'est généralement pas une base du réseau \( \LL(B) \).
+\end{problem}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.23\textwidth]{images/lattice_0_9.png}
+    \caption{ Base de Gram-Schmidt qui n'est pas une base de \( \LL \). }
+    \label{fig:GS}
+\end{figure}
+
+Nous cherchons une base de \( \LL \) qui \emph{approxime} la base de Gram--Schmidt aussi fidèlement que possible.
+
+\begin{notation}
+    On définit l'entier le plus proche de $x \in \R$ par $\lceil x\rfloor  = \lfloor x+1/2 \rfloor$.
+\end{notation}
+
+\begin{proposition}
+    On a $|x-\lceil x\rfloor| \leq \frac12$ pour tout $x \in \R$.
+\end{proposition}
+
+Dans la suite de cette explication, le lecteur est invité à porter une attention particulière aux * qui dénotent un vecteur de la base de Gram-Schmidt.
+L'opération d'orthogonaliation de Gram-Schmidt nous donne :
+\begin{equation}
+    \mathbf{b}^*_2 \coloneqq \mathbf{b}_2 - \mu_{2,1} \mathbf{b}_1^* \notin \LL
+\end{equation}
+
+Mais \( \mathbf{b}_1^* = \mathbf{b}_1 \in \LL \), en prenant \( k \in \Z \), on a
+\(
+\mathbf{b}_2 - k \mathbf{b}_1 \in \LL
+\),
+on pourrait donc réaliser l'opération
+\[
+    \mathbf{b}_2 \coloneqq \mathbf{b}_2 - k \mathbf{b}_1 \in \LL
+\]
+On peut donc choisir \( k \in \Z \) qui minimise \( \left \langle \bb_2, \bb_1 \right \rangle \), ce qui est réalisé par \( k \coloneqq \nint{\mu_{i,j}}\). On en déduit donc l'opération
+\begin{equation}
+    \mathbf{b}_2 \coloneqq  \mathbf{b}_2 - \nint{\mu_{2,1}} \mathbf{b}_1 \in \LL
+\end{equation}
+
+On peut donc étendre ce procédé par récurrence pour construire la nouvelle famille \( (\bb_i)_{1 \leq i \leq n} \).
+
+En refaisant les calculs on peut montrer que la base de Gram-Schmidt associée est inchangée, mais que les nouveaux coefficients \( |\mu_{i,j}|<\frac12\) d'après la proposition 2.1.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.23\textwidth]{images/lattice_1_9.png}
+    \caption{ Base de \( \LL \) proche de la base Gram-Schmidt . }
+    \label{fig:GS}
+\end{figure}
+
+\begin{definition}
+    Soit \( (\bb_i)_{1 \leq i \leq n} \) une base d'un réseau et \( U \) la matrice triangulaire supérieure telle que \( B = UB^* \) .
+    est dite \textbf{propre} \footnote{Une base propre est aussi connue sous le nom de base size-réduite dans la littérature.} si
+
+    \begin{equation}
+        \displaystyle\max_{1 \leq i < j \leq n} |\mu_{i,j}| \leq \frac{1}{2}.
+    \end{equation}
+\end{definition}
+
+\begin{counterexample}
+    Bien que la proprification impose une certaine contrainte sur les coefficients de projection, elle ne garantit pas à elle seule que les vecteurs de la base soient presque orthogonaux.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.23\textwidth]{images/lattice_0_10.png}
+        \caption{ Base propre mais peu orthogonale }
+        \label{fig:nosufficient}
+    \end{figure}
+\end{counterexample}
+
+Idéalement, nous souhaiterions trouver une base \( (\bb_i)_{1 \leq i \leq n} \) du réseau \( \LL \) telle que :
+
+\[
+    \| \bb_1 \| = \lambda_1(\LL), \quad
+    \| \bb_2 \| = \lambda_2(\LL), \quad \ldots, \quad
+    \| \bb_n \| = \lambda_n(\LL)
+\]
+Ceci implique \( \| \bb_1 \| \leq \cdots \leq \| \bb_n \|\), mais cela est trop difficile de trouver une telle base car cela reviendrait à résoudre SIVP.
+
+\begin{definition}
+    Une base \( (\bb_i)_{1 \leq i \leq m} \) satisfait la \textbf{condition de Lovász} \footnote{Une condition plus générale : \( ( \delta - \mu_{i+1,i}^2 ) \, \|\bb_i^*\|^2 \leq \|\bb_{i+1}^*\|^2 \text{ pour } 1 \leq i \leq n, \text{ où } \delta \in \left] \frac{1}{4}, 1 \right]  \) } si:
+    \[
+        \|\bb_i^*\|^2 \leq 2\|\bb_{i+1}^*\|^2 \quad \text{ pour tout } 1 \leq i < n
+    \]
+\end{definition}
+
+\begin{remark}
+    On peut interpréter cette condition comme une forme de quasi-croissance des normes \( \|\bb_i^*\| \) : elle n'exige pas que celles-ci soient strictement croissantes, mais impose que toute éventuelle décroissance soit contrôlée, autrement dit, qu'elles ne décroissent pas trop rapidement.
+\end{remark}
+
+Dès lors, il est naturel de se demander pourquoi ne pas échanger les vecteurs lorsque cette condition de Lovász n’est pas satisfaite.
+
+
+\begin{example}
+    Si l’on applique cette idée à l’exemple précédent, alors après permutation des vecteurs concernés et une nouvelle phase de réduction, on obtient à nouveau une base améliorée :
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.23\textwidth]{images/lattice_1_10.png}
+        \caption{ Nouvelle base size-réduite}
+        \label{fig:sufficient}
+    \end{figure}
+\end{example}
+
+
+\begin{definition}
+    Une base \( \mathcal{B} \) d'un réseau \( \LL (\mathcal{B}) \)  est dite \textbf{LLL-réduite} si
+    \begin{itemize}
+        \item[$\bullet$] $\mathcal{B}$ est propre.
+        \item[$\bullet$] $\mathcal{B}$ satisfait la condition de Lovàsz.
+    \end{itemize}
+\end{definition}
+
+\begin{remark}
+    Chaque vecteur de la base réduite a une norme au moins égale à la moitié de celle du précédent, garantissant ainsi une décroissance modérée.
+\end{remark}
+
+\begin{theoreme}
+    Soit \( \mathcal{B} \) une base réduite du réseau \( \LL \subseteq \R^n \) et soit \( v \in \LL \setminus \{0\} \). Alors
+    \[ \|\bb_1\| \leq 2^{(n-1)/2} \cdot \|\bv\| \]
+\end{theoreme}
+
+En particulier, ce résultat s’applique à un vecteur \( \bv \in \LL \) de plus petite norme non nulle, c’est-à-dire un vecteur atteignant \( \lambda_1(\LL) \). On en déduit donc :
+\[
+    \|\bb_1\| \leq 2^{(n-1)/2} \cdot \lambda_1(\LL),
+\]
+ce qui montre que \( \mathrm{LLL} \) fournit en temps polynomial un vecteur de norme à un facteur \( 2^{(n-1)/2} \) près du plus court vecteur du réseau.
+Autrement dit, l’algorithme \( \mathrm{LLL} \) résout approximativement le problème du plus court vecteur (\( \mathrm{SVP} \)) avec un facteur d’approximation \( \gamma = 2^{(n-1)/2} \).
+Par extension, en renvoyant les vecteurs de la base réduite, \( \mathrm{LLL} \) permet également de résoudre le problème \( \mathrm{SIVP} \) (\textit{Shortest Independent Vectors Problem}) avec le même facteur d’approximation.

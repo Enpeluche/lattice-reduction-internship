@@ -1,0 +1,21 @@
+\chapter{Réduction de réseaux polynomiaux}
+
+\lettrine{D}{ans} ce chapitre, nous nous concentrerons sur un algorithme de réduction
+de réseaux euclidiens s’exécutant en temps polynomial : l’algorithme $\mathrm{LLL}$,
+du nom de ses auteurs A. Lenstra, H. Lenstra et L. Lovász. L'algorithme $\mathrm{LLL}$
+possède de nombreuses applications, notamment en cryptanalyse de schémas basés sur le
+problème du sac à dos, en factorisation efficace de polynômes, ou encore dans le calcul
+rapide de décompositions en forme normale d'Hermite (HNF). Le lecteur pourra consulter
+\parencite{Havas1998} pour un aperçu plus complet de ses usages.
+
+Nous ne traiterons pas d’autres algorithmes de réductions de réseaux euclidiens comme
+$\mathrm{BKZ}$, afin de rester dans un cadre plus élémentaire. L’algorithme $\mathrm{LLL}$
+repose sur une idée simple mais puissante : il produit une approximation entière de la
+décomposition de Gram-Schmidt et réorganise les vecteurs de la base pour en améliorer
+la structure. Un rappel sur le procédé d’orthogonalisation de Gram-Schmidt est dans
+l’annexe dédiée. Celle-ci ne sera pas rappelée ici afin de préserver la concision du
+texte. Au cours de mon stage j'ai réalisé une présentation de l'algorithme LLL, ainsi
+qu'une idée rapide de sa preuve, que vous pourrez trouver ici.
+
+\input{reduced-basis}
+\input{operation-and-example-reduced-basis}
