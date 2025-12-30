@@ -1,0 +1,68 @@
+
+\section{Correction}
+\begin{theoreme}[Correction]
+    L'algorithme \hyperref[algo:LLL_MCA]{\emph{LLL }} calcule une base réduite de \( \LL \).
+\end{theoreme}
+
+\vspace{0.2cm}
+\begin{smallalgo}{Proprification de \( \bg_{i} \)}{step:P}
+    \For{$j = i{-}1, i{-}2, \dots, 1$}{
+        \hyperref[step:PP]{\emph{Proprification partielle de \( \bg_i \)}}\;
+    }
+\end{smallalgo}
+
+\begin{lemma}
+    \hyperref[step:P]{\emph{Proprification de $\bg_i$}} ne change pas $G^*$ et à la fin on a
+    \[
+        |\mu_{i,l}| \leq \frac{1}{2} \text{ pour } 1 \leq l < i.
+    \]
+\end{lemma}
+
+On étudie maintenant l'étape de réduction, l'idée consiste à réorganiser les vecteurs afin de garantir une progression quantifiable, qui assurera la terminaison de LLL.
+
+\vspace{0.2cm}
+\begin{smallalgo}{Réduction de \( \bg_{i-1}, \bg_i \)}{step:R}
+    \If{\( i > 1 \) \textbf{et} \( \norm{\bg_{i-1}^*}^2 > 2 \norm{\bg_{i}^*}^2 \)}
+    {
+        Échanger \( \bg_{i-1} \) et \( \bg_i \)\;
+
+        Mettre à jour \( (B^*, U)  \)\;
+
+        \( i \leftarrow i - 1 \)\;
+    }
+    \Else
+    {
+        \( i \leftarrow i + 1 \)\;
+    }
+\end{smallalgo}
+
+\begin{lemma}
+    Supposons que \( \bg_{i-1} \) et \( \bg_i \) sont échangés à l'étape \hyperref[step:R]{\emph{Réduction de $\bg_{i-1}, \bg_{i}$}}.
+
+    On note \( h_k \) les vecteurs après échange et \( h_k^* \) leur base orthogonale de Gram-Schmidt.
+
+    Alors
+
+    \begin{enumerate}
+        \item \( \mathbf{h}_k^* = \bg_k^* \quad \text{pour tout } k \in \{1, \dots, n\} \setminus \{i-1, i\} \),
+        \item \( \| \mathbf{h}_{i-1}^* \|^2 < \dfrac{3}{4} \| \bg_{i-1}^* \|^2 \),
+        \item \( \| \mathbf{h}_i^* \| \leq \| \bg_{i-1}^* \| \).
+    \end{enumerate}
+\end{lemma}
+
+\vspace{0.2cm}
+\begin{smallalgo}{LLL}{step:LLL}
+    \While{\( i \leq n \)}
+    {
+        \textit{Proprification de \( \bg_i \)}\;
+        \textit{Réduction de \( \bg_{i-1}, \bg_i \)}\;
+    }
+\end{smallalgo}
+
+\begin{lemma}
+    Au début de chaque itération de la boucle à l'étape \hyperref[step:LLL]{\emph{LLL}}, les invariants suivants sont vérifiés :
+    \[
+        |\mu_{k,l}| \leq \frac{1}{2} \quad \text{pour } 1 \leq l < k < i, \qquad \|\bg_{k-1}^*\|^2 \leq 2 \|\bg_k^*\|^2 \quad \text{pour } 1 < k < i.
+    \]
+\end{lemma}
+
