@@ -1,0 +1,107 @@
+
+
+\section{Définitions et exemples}
+
+On commence par introduire la notion de réseau polynomial. Des rappels détaillés sur les anneaux et sur les modules sont dans l’annexe correspondante.
+
+\begin{definition}
+    Un \textbf{réseau polynomial} $\LL$ est un \( \K[x] \)-module libre de type fini.
+\end{definition}
+
+On peut montrer qu'il existe une famille $\K[x]$-libre maximale $(\bb_i)_{1 \leq i \leq m}$ dans $\LL$ telle que
+
+$$\LL = \bigoplus\limits_{1 \leq i \leq m} \K[x] \bb_i:=\{a_1\bb_1 + \cdots a_m\bb_m : a_i \in \K[x]\}$$
+
+
+Cette famille est appelée \textbf{base} de $\LL$, si on note \(B \in \K[x]^{m \x n} \) la matrice de la famille $(\bb_i)_{1 \leq i \leq m}$ on notera $\LL(B)$ le réseau de base $B$, donc \textbf{engendré} par la famille $(\bb_i)_{1 \leq i \leq m}$. L'entier $m$ est commun à toutes les bases de $\LL$ et on l'appelle \textbf{rang} de $\LL$. Lorsque $n=m$, on dit que le réseau est de \textbf{rang plein}. Un élément de \( \K[x]^{m \x n} \) est appelé matrice polynomiale.
+
+\begin{example}
+    \[B=
+        \begin{pmatrix}
+            3x + 4 & x^9     \\
+            5      & x^2 + 1
+        \end{pmatrix}
+        \in \R[x]^{2 \x 2}
+    \]
+    est une matrice polynomiale qui représente le réseau $\LL (B)$.
+\end{example}
+
+\begin{proposition}
+    Soient \( P \) et \( Q \) deux bases de lignes d’un même \( \F[x] \)-module libre . Alors, il existe une matrice unimodulaire \( U \) telle que
+    \[
+        P \;=\; U \, Q.
+    \]
+\end{proposition}
+On observe une analogie structurelle entre les matrices et les modules : de même que les matrices à coefficients dans \( \K \) sont naturellement liées aux \( \K \)-espaces vectoriels, les matrices à coefficients dans \( \K[x] \) interviennent dans l'étude des \( \K[x] \)-modules libres.
+
+\begin{comment}
+\section{Deux points de vue sur les matrices polynomiales}
+
+\begin{theoreme}
+    On dispose d'un \textbf{isomorphisme structurel} au sens des modules:
+    \[
+        \K[x]^{m \x n} \;\cong\; \K^{m\x n}\bigr[x]
+    \]
+\end{theoreme}
+
+\begin{example}
+    \[
+        \begin{pmatrix}
+            3x + 4 & x^9     \\
+            5      & x^2 + 1
+        \end{pmatrix}
+        =
+        \begin{pmatrix}
+            0 & 1 \\
+            0 & 0
+        \end{pmatrix}
+        x^9
+        +
+        \begin{pmatrix}
+            0 & 0 \\
+            0 & 1
+        \end{pmatrix}
+        x^2
+        +
+        \begin{pmatrix}
+            3 & 0 \\
+            0 & 0
+        \end{pmatrix}
+        x
+        +
+        \begin{pmatrix}
+            4 & 0 \\
+            5 & 1
+        \end{pmatrix}
+    \]
+
+
+
+\end{example}
+
+On peut donc interpréter une matrice polynomiale soit comme un polynôme à coefficients dans matriciel, soit comme une matrice à coefficients polynomiaux. Le choix de l’approche dépend alors principalement du type de calculs et d’estimations de complexité qu’on souhaite mener. Deux approches principales sont alors envisageables pour effectuer des calculs algébriques (résolution de systèmes, inversion, déterminant, etc.) :
+
+\begin{enumerate}
+    \item \textbf{Appliquer les algorithmes d'algèbre linéaire classique sur} \(\K[x]^{m \x n}\).
+
+          On traite la matrice comme un objet usuel, en considérant simplement que les coefficients se trouvent dans l’anneau principal \( \K[x] \).
+          \begin{itemize}
+              \item[$\bullet$] \textbf{Avantage} : cette méthode tire parti de la robustesse théorique et de l'expérience accumulée avec les algorithmes classiques.
+
+              \item[$\bullet$] \textbf{Limite} : on peut rapidement générer des calculs complexes, par exemple des fractions polynomiales de grand degré, et obtenir des bornes de complexité peu réaliste.
+          \end{itemize}
+
+          \vspace{0.5cm}
+    \item \textbf{Appliquer des algorithmes d'arithmétique polynomiale sur }\( \K^{m\x n}[x] \)
+
+          \begin{itemize}
+              \item[$\bullet$] \textbf{Avantage} : on bénéficie de techniques optimisées pour les polynômes (accélération de la multiplication via FFT, etc.), on a un meilleur contrôle du degré.
+
+              \item[$\bullet$] \textbf{Limite} : cela peut parfois s'avérer restrictif\footnote{Dans la division avec reste, on suppose souvent que \( B \) possède un coefficient dominant inversible (\( \mathrm{lc}(B)\neq 0 \)). On pourrait toutefois assouplir cette hypothèse, avec la notion de base "réduite" qui sera définie dans les prochains chapitres}
+                    ou inefficace
+                    \footnote{Si l'on travaille avec une matrice de degré \( d \) dont de nombreuses entrées ont un degré bien inférieur à \( d \), les algorithmes basés uniquement sur le degré maximal risquent de fournir des performances dégradées.}
+                    , en particulier si les degrés des entrées diffèrent sensiblement d'une ligne ou d'une colonne à l'autre.
+          \end{itemize}
+\end{enumerate}
+
+\end{comment}
